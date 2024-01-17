@@ -1,0 +1,31 @@
+{
+    "name": "jezzdk/statamic-here-maps",
+    "autoload": {
+        "psr-4": {
+            "Jezzdk\\StatamicHereMaps\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jess Stopa"
+        }
+    ],
+    "support": {
+        "email": "jess@stopa.dk"
+    },
+    "extra": {
+        "statamic": {
+            "name": "Statamic Here Maps",
+            "description": "Statamic Here Maps addon",
+            "editions": [
+                "free",
+                "pro"
+            ]
+        },
+        "laravel": {
+            "providers": [
+                "Jezzdk\\StatamicHereMaps\\ServiceProvider"
+            ]
+        }
+    }
+}
