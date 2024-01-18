@@ -1,7 +1,25 @@
 <template>
     <div>
         <input v-if="hasGeocoder" type="text" v-model="location" @keyup.enter="findPosition" placeholder="Search location" class="input-text">
-        <div class="w-full h-96" ref="map"></div>
+        <div class="relative border border-gray-500">
+            <div class="w-full h-96" ref="map"></div>
+            <div v-if="config.maptypes" id="menu" class="absolute top-0 left-0 flex items-center gap-4 bg-gray-200 px-2 py-1">
+                <div class="text-xs">
+                    Maptype
+                    <select v-model="type" class="bg-white text-xs">
+                        <option value="normal.map">Normal</option>
+                        <option value="normal.mapnight">Normal (night)</option>
+                        <option value="normal.base">Normal (no labels)</option>
+                        <option value="normal.basenight">Normal (no labels, night)</option>
+                        <option value="satellite.map">Satellite</option>
+                        <option value="satellite.base">Satellite (no labels)</option>
+                        <option value="terrain.map">Terrain</option>
+                        <option value="terrain.base">Terrain (no labels)</option>
+                    </select>
+                </div>
+                <label><input type="checkbox" v-model="showControls" /> Map controls</label>
+            </div>
+        </div>
         <div class="flex justify-between">
             <div class="flex items-center gap-2">
                 <a v-if="hasMarker" href="#" @click.prevent="removeMarker" class="!text-red-400 text-xs">[x] Remove marker</a>
@@ -10,7 +28,7 @@
             </div>
             <div><a v-if="canReset && mapHasChanged" href="#" @click.prevent="resetMap" class="!text-red-400 text-xs">[-] Reset map</a></div>
         </div>
-        <div v-if="this.meta.pro" class="my-2">
+        <div v-if="this.meta.pro && !config.hideStyles" class="my-2">
             <div v-show="stylesExpanded">
                 <div class="help-block"><p>Paste in the link to the JSON file.</p></div>
                 <textarea-input v-model="style"></textarea-input>
@@ -33,6 +51,7 @@ export default {
             markerLng: null,
             zoom: null,
             type: null,
+            showControls: false,
             style: null,
             map: null,
             marker: null,
@@ -42,6 +61,8 @@ export default {
             ui: null,
             geocoder: null,
             location: null,
+            platform: null,
+            defaultLayers: null,
         }
     },
     watch: {
@@ -61,9 +82,16 @@ export default {
             this.saveLocation()
         },
         type () {
+            if (this.map) {
+                this.map.setBaseLayer(this.determineMapType())
+            }
+
             this.saveLocation()
         },
         style () {
+            this.saveLocation()
+        },
+        showControls () {
             this.saveLocation()
         },
     },
@@ -90,15 +118,16 @@ export default {
         this.markerLat = this.value.markerLat
         this.markerLng = this.value.markerLng
         this.zoom = this.value.zoom || this.config.initialZoom || 16
-        this.type = this.config.mapType || 'normal.map'
+        this.type = this.value.type || 'normal.map'
         this.style = this.value.style
+        this.showControls = this.value.showControls
 
-        const platform = new H.service.Platform({
+        this.platform = new H.service.Platform({
             apikey: this.meta.apiKey
         })
-        const defaultLayers = platform.createDefaultLayers()
+        this.defaultLayers = this.platform.createDefaultLayers()
 
-        this.map = new H.Map(this.$refs.map, this.determineMapType(defaultLayers), {
+        this.map = new H.Map(this.$refs.map, this.determineMapType(), {
             center: {
                 lat: Number.parseFloat(this.lat),
                 lng: Number.parseFloat(this.lng)
@@ -109,7 +138,7 @@ export default {
         window.addEventListener('resize', () => this.map.getViewPort().resize())
 
         this.behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(this.map))
-        this.ui = H.ui.UI.createDefault(this.map, defaultLayers, 'en-US')
+        this.ui = H.ui.UI.createDefault(this.map, this.defaultLayers, 'en-US')
 
         const mapSettingsControl = this.ui.getControl('mapsettings')
         mapSettingsControl.setVisibility(false)
@@ -125,7 +154,7 @@ export default {
         }
 
         if (this.config.geocoder) {
-            this.geocoder = platform.getSearchService()
+            this.geocoder = this.platform.getSearchService()
         }
 
         this.addMapListeners()
@@ -185,6 +214,7 @@ export default {
                 zoom: this.zoom,
                 type: this.type,
                 style: this.style,
+                showControls: this.showControls,
             })
         },
         findPosition () {
@@ -219,33 +249,33 @@ export default {
                 console.debug('Error getting user position')
             })
         },
-        determineMapType (defaultLayers) {
-            if (this.config.mapType === 'normal.map') {
-                return defaultLayers.raster.normal.map
+        determineMapType () {
+            if (this.type === 'normal.map') {
+                return this.defaultLayers.raster.normal.map
             }
-            if (this.config.mapType === 'normal.mapnight') {
-                return defaultLayers.raster.normal.mapnight
+            if (this.type === 'normal.mapnight') {
+                return this.defaultLayers.raster.normal.mapnight
             }
-            if (this.config.mapType === 'normal.base') {
-                return defaultLayers.raster.normal.base
+            if (this.type === 'normal.base') {
+                return this.defaultLayers.raster.normal.base
             }
-            if (this.config.mapType === 'normal.basenight') {
-                return defaultLayers.raster.normal.basenight
+            if (this.type === 'normal.basenight') {
+                return this.defaultLayers.raster.normal.basenight
             }
-            if (this.config.mapType === 'satellite.map') {
-                return defaultLayers.raster.satellite.map
+            if (this.type === 'satellite.map') {
+                return this.defaultLayers.raster.satellite.map
             }
-            if (this.config.mapType === 'satellite.base') {
-                return defaultLayers.raster.satellite.base
+            if (this.type === 'satellite.base') {
+                return this.defaultLayers.raster.satellite.base
             }
-            if (this.config.mapType === 'terrain.map') {
-                return defaultLayers.raster.terrain.map
+            if (this.type === 'terrain.map') {
+                return this.defaultLayers.raster.terrain.map
             }
-            if (this.config.mapType === 'terrain.base') {
-                return defaultLayers.raster.terrain.base
+            if (this.type === 'terrain.base') {
+                return this.defaultLayers.raster.terrain.base
             }
 
-            return defaultLayers.raster.normal.map
+            return this.defaultLayers.raster.normal.map
         },
         markerDragStartHandler (ev) {
             let target = ev.target,

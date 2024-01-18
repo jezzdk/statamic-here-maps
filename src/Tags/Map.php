@@ -96,7 +96,7 @@ class Map extends Tags
 
     protected function getType()
     {
-        return $this->params->get('type', 'roadmap');
+        return $this->params->get('type', 'normal.map');
     }
 
     protected function getIcon()

@@ -33,9 +33,6 @@ class HereMaps extends Fieldtype
 
     public function augment($value)
     {
-        $value['type'] = $this->config('mapType', 'normal.map');
-        $value['showControls'] = $this->config('showControls', false);
-
         return MapHelper::convertToHtml($value);
     }
 
@@ -83,25 +80,6 @@ class HereMaps extends Fieldtype
     protected function configFieldItems(): array
     {
         return [
-            // These should be defined by the raster list:
-            // https://www.here.com/docs/bundle/maps-api-for-javascript-api-reference/page/H.service.Platform.html#createDefaultLayers
-            'mapType' => [
-                'display' => 'Map type',
-                'instructions' => 'Choose the map type to use.',
-                'type' => 'select',
-                'default' => 'normal.map',
-                'options' => [
-                    'normal.map' => __('Normal'),
-                    'normal.mapnight' => __('Normal (night)'),
-                    'normal.base' => __('Normal (no labels)'),
-                    'normal.basenight' => __('Normal (no labels, night)'),
-                    'satellite.map' => __('Satellite'),
-                    'satellite.base' => __('Satellite (no labels)'),
-                    'terrain.map' => __('Terrain'),
-                    'terrain.base' => __('Terrain (no labels)'),
-                ],
-                'width' => 50
-            ],
             'initialZoom' => [
                 'display' => 'Initial zoom level',
                 'instructions' => 'Set a zoom level from 1 (far) to 21 (near).',
@@ -109,13 +87,13 @@ class HereMaps extends Fieldtype
                 'default' => '16',
                 'width' => 50
             ],
-            // 'maptypes' => [
-            //     'display' => 'Enable maptype selector',
-            //     'instructions' => 'Allow the user to select the map type.',
-            //     'type' => 'toggle',
-            //     'default' => true,
-            //     'width' => 50
-            // ],
+            'maptypes' => [
+                'display' => 'Enable maptype selector',
+                'instructions' => 'Allow the user to select the map type.',
+                'type' => 'toggle',
+                'default' => true,
+                'width' => 50
+            ],
             'markers' => [
                 'display' => 'Enable marker creation',
                 'instructions' => 'The user can create and remove a marker on the map.',
@@ -130,9 +108,9 @@ class HereMaps extends Fieldtype
                 'default' => false,
                 'width' => 50
             ],
-            'showControls' => [
-                'display' => 'Show controls',
-                'instructions' => 'Display the map with the default Google Map controls.',
+            'hideStyles' => [
+                'display' => 'Disable custom styles',
+                'instructions' => 'Remove the ability to apply custom styles.',
                 'type' => 'toggle',
                 'default' => false,
                 'width' => 50
