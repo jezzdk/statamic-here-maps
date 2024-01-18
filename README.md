@@ -2,7 +2,14 @@
 ![Statamic 4.0+](https://img.shields.io/badge/Statamic-3.0+-FF269E?style=for-the-badge&link=https://statamic.com)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jezzdk/statamic-here-maps.svg?style=for-the-badge)](https://packagist.org/packages/jezzdk/statamic-here-maps)
 
-A HERE Maps addon for Statamic V4 for creating and displaying HERE Maps on your website.
+I read the documentation so you don't have to :)
+
+A HERE Maps addon for Statamic for creating and displaying HERE Maps on your website.
+
+Check out my other map addons:
+- [Statamic Google Maps](https://statamic.com/addons/stopa-development/statamic-google-maps)  
+- [Statamic Mapbox](https://statamic.com/addons/stopa-development/statamic-mapbox)
+
 
 ## Installation
 
@@ -86,7 +93,7 @@ The field has a few settings:
 * Enable maptype selector - Allow the user to select the map type
 * Enable marker creation - The user can create and remove a marker on the map
 * Enable Geocoder - This adds a search field above the map, enabling the user to search for an address
-* Disable custom styles - This removed the ability to add custom styles for this field
+* Disable custom styles - This removes the ability to add custom styles for this field
 
 When using markers, the script will look for an icon at `/public/assets/marker.png`. If it exist it will be used, otherwise it will use the default HERE Maps pin.
 
