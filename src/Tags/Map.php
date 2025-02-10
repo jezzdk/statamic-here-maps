@@ -56,8 +56,8 @@ class Map extends Tags
 
     protected function getMarkerLat()
     {
-        if ($this->params->get('marker', false)) {
-            return $this->params->get('lat');
+        if (!$this->params->get('marker', false)) {
+            return null;
         }
 
         return $this->params->get('markerLat');
@@ -65,8 +65,8 @@ class Map extends Tags
 
     protected function getMarkerLng()
     {
-        if ($this->params->get('marker', false)) {
-            return $this->params->get('lng');
+        if (!$this->params->get('marker', false)) {
+            return null;
         }
 
         return $this->params->get('markerLng');
