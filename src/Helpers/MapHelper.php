@@ -98,7 +98,7 @@ class MapHelper
         ' : '
         var map = new H.Map(
             document.getElementById("'.$id.'"),
-            defaultLayers.raster.'.$type.',
+            defaultLayers.vector.'.$type.',
             {
                 center: {
                     lng: '.$lng.',
