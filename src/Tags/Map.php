@@ -9,12 +9,12 @@ use Statamic\Tags\Tags;
 
 class Map extends Tags
 {
-    protected static $handle = 'map';
+    protected static $handle = 'here_map';
 
     protected static $aliases = ['here_map'];
 
     /**
-     * The {{ map }} tag.
+     * The {{ here_map }} tag.
      *
      * Usage:
      * {{ here_map lat="12.1234" lng="52.1234" zoom="14" marker="true" markerLat="12.1243" markerLng="52.1243" type="satellite" showControls="true" }}
